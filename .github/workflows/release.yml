@@ -1,0 +1,94 @@
+name: Publicar APK
+
+# Publica una Release con los APK cuando cambia el archivo VERSION en main.
+# Los APK se firman con la clave del autor, guardada en los secretos del repositorio
+# (Settings → Secrets and variables → Actions → New repository secret):
+#   KEYSTORE_BASE64    el resultado de:  base64 -w0 keystore/release.p12
+#   KEYSTORE_PASSWORD  la contraseña del almacén (la de KSPASS en build.sh)
+# Sin esos secretos el flujo no publica nada (y lo avisa), para no subir APK firmados con
+# otra clave que no se podrían instalar encima de las versiones anteriores.
+# Enlaces fijos a la última versión:
+#   .../releases/latest/download/launcher-movil.apk
+#   .../releases/latest/download/launcher-movil-insignias.apk
+on:
+  push:
+    branches: [ main ]
+    paths: [ 'VERSION' ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Clave de firma
+        id: key
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo "::notice::No se publica: falta el secreto KEYSTORE_BASE64 (ver README, «Publicar versiones»)."
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          mkdir -p keystore
+          echo "$KEYSTORE_BASE64" | base64 -d > keystore/release.p12
+          echo "ok=true" >> "$GITHUB_OUTPUT"
+
+      - name: Versión
+        id: ver
+        if: steps.key.outputs.ok == 'true'
+        run: |
+          V="$(tr -d ' \n' < VERSION)"
+          M="$(grep -o 'android:versionName="[^"]*"' AndroidManifest.xml | cut -d'"' -f2)"
+          if [ "$V" != "$M" ]; then
+            echo "::error::VERSION ($V) no coincide con android:versionName del manifiesto ($M)"
+            exit 1
+          fi
+          echo "v=$V" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-java@v4
+        if: steps.key.outputs.ok == 'true'
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Descargar herramientas
+        if: steps.key.outputs.ok == 'true'
+        run: ./tools/get-tools.sh
+
+      - name: Compilar y firmar las dos variantes
+        if: steps.key.outputs.ok == 'true'
+        env:
+          KSPASS: ${{ secrets.KEYSTORE_PASSWORD }}
+        run: ./build.sh --variant ambas
+
+      - name: Sumas de verificación
+        if: steps.key.outputs.ok == 'true'
+        run: |
+          mkdir -p dist
+          cp out/launcher-movil.apk out/launcher-movil-insignias.apk dist/
+          cd dist && sha256sum *.apk | tee SHA256SUMS.txt
+
+      - name: Publicar Release
+        if: steps.key.outputs.ok == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.ver.outputs.v }}
+          target_commitish: ${{ github.sha }}
+          name: Inicio v${{ steps.ver.outputs.v }}
+          generate_release_notes: true
+          body: |
+            ## Qué descargar
+            - **`launcher-movil.apk`** — empieza por este. Se instala desde el gestor de archivos. No tiene insignias de notificación.
+            - **`launcher-movil-insignias.apk`** — con insignias. Instálalo con `adb install -r`: Google Play Protect bloquea su instalación desde el gestor de archivos porque pide acceso a notificaciones.
+
+            Cambios en [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) · Guía en el [README](https://github.com/${{ github.repository }}#readme) · Dominio público (Unlicense).
+          files: |
+            dist/launcher-movil.apk
+            dist/launcher-movil-insignias.apk
+            dist/SHA256SUMS.txt

@@ -1,0 +1,9 @@
+build/
+out/
+tools/aapt2
+tools/*.jar
+tools/*.zip
+keystore/
+*.apk
+*.p12
+*.jks

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="label_text">#FFFFFFFF</color>
+    <color name="label_shadow">#B0000000</color>
+    <color name="drawer_scrim">#E6101013</color>
+    <color name="drawer_text">#FFFFFFFF</color>
+    <color name="search_bg">#33FFFFFF</color>
+    <color name="search_text">#FFFFFFFF</color>
+    <color name="search_hint">#99FFFFFF</color>
+    <color name="folder_bg">#F21C1C20</color>
+    <color name="folder_ring">#55FFFFFF</color>
+    <color name="badge_bg">#FFE53935</color>
+    <color name="badge_text">#FFFFFFFF</color>
+    <color name="page_dot">#66FFFFFF</color>
+    <color name="page_dot_active">#FFFFFFFF</color>
+    <color name="popup_bg">#F2232327</color>
+    <color name="popup_text">#FFFFFFFF</color>
+    <color name="ripple">#33FFFFFF</color>
+</resources>

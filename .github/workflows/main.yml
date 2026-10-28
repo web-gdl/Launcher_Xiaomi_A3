@@ -1,0 +1,36 @@
+name: Compilar APK
+
+# Comprueba que el proyecto compila en cada push y deja los APK como artefactos de prueba.
+# Ojo: estos APK se firman con una clave temporal (la del autor no está aquí), así que no se
+# pueden instalar encima de una versión publicada en Releases. Para usar, descarga de Releases.
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Descargar herramientas
+        run: ./tools/get-tools.sh
+
+      - name: Compilar las dos variantes (firma temporal)
+        run: ./build.sh --variant ambas
+
+      - name: Guardar APK de prueba
+        uses: actions/upload-artifact@v4
+        with:
+          name: launcher-movil-prueba-ci
+          path: |
+            out/launcher-movil.apk
+            out/launcher-movil-insignias.apk
+          if-no-files-found: error

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Inicio</string>
+    <string name="settings">Ajustes del inicio</string>
+    <string name="all_apps">Todas las apps</string>
+    <string name="search_hint">Buscar apps</string>
+    <string name="app_info">Información de la app</string>
+    <string name="uninstall">Desinstalar</string>
+    <string name="remove">Quitar</string>
+    <string name="add_to_home">Añadir al inicio</string>
+    <string name="widgets">Widgets</string>
+    <string name="wallpaper">Fondo de pantalla</string>
+    <string name="folder_name_hint">Carpeta</string>
+    <string name="no_results">Sin resultados</string>
+    <string name="badges_enable">Activar insignias de notificación</string>
+    <string name="badges_hint">Para mostrar el punto de notificación hay que conceder acceso a las notificaciones.</string>
+    <string name="badges_unavailable">Esta versión no incluye insignias de notificación: Google Play Protect bloquea la instalación desde el gestor de archivos de las apps que piden acceso a notificaciones. Para tenerlas, instala la versión «insignias» con adb (ver README).</string>
+    <string name="grid_columns">Columnas</string>
+    <string name="grid_rows">Filas</string>
+    <string name="widgets_no_dock">Los widgets no caben en el dock</string>
+    <string name="no_space_widget">No hay espacio para el widget en esta página</string>
+    <string name="page_full">Página llena</string>
+    <string name="dock_full">Dock lleno</string>
+    <string name="added_to_home">Añadido al inicio</string>
+    <string name="cannot_open">No se pudo abrir</string>
+    <string name="cannot_uninstall">Esta app no se puede desinstalar</string>
+    <string name="not_available">No disponible</string>
+    <string name="no_widgets">No hay widgets instalados</string>
+    <string name="widget_failed">No se pudo añadir el widget</string>
+    <string name="folder_default_name">Carpeta</string>
+    <string name="widget_unavailable">Widget no disponible.\nMantén pulsado para quitarlo.</string>
+    <string name="show_labels">Mostrar nombres de apps</string>
+    <string name="icon_size">Tamaño de los iconos</string>
+    <string name="reset_layout">Restablecer disposición</string>
+    <string name="reset_layout_confirm">¿Borrar la disposición del inicio y volver a empezar?</string>
+    <string name="cancel">Cancelar</string>
+    <string name="ok">Aceptar</string>
+</resources>

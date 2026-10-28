@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Android 10+: los ajustes siguen el modo claro/oscuro del sistema -->
+    <style name="SettingsTheme" parent="@android:style/Theme.DeviceDefault.DayNight">
+        <item name="android:windowShowWallpaper">false</item>
+    </style>
+</resources>

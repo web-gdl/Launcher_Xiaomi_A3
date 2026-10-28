@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.webgdl.launcher"
+    android:versionCode="3"
+    android:versionName="0.1.2">
+
+    <!--
+      Permisos mínimos. Sin INTERNET: el launcher no puede conectarse a nada.
+      QUERY_ALL_PACKAGES: ver todas las apps instaladas (necesario para un launcher).
+      EXPAND_STATUS_BAR: bajar la barra de notificaciones al deslizar hacia abajo.
+      REQUEST_DELETE_PACKAGES: abrir el diálogo del sistema para desinstalar (lo confirma el usuario).
+    -->
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+    <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
+    <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
+
+    <uses-feature android:name="android.software.app_widgets" android:required="false" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        <activity
+            android:name=".HomeActivity"
+            android:launchMode="singleTask"
+            android:stateNotNeeded="true"
+            android:clearTaskOnLaunch="true"
+            android:excludeFromRecents="true"
+            android:windowSoftInputMode="adjustPan|stateHidden"
+            android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+            android:screenOrientation="nosensor"
+            android:resizeableActivity="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/settings"
+            android:theme="@style/SettingsTheme"
+            android:exported="false" />
+
+        <!-- Insignias de notificación (el usuario concede el acceso manualmente) -->
+        <service
+            android:name=".BadgeNotificationListener"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
+    </application>
+</manifest>
