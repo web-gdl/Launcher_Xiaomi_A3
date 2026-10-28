@@ -158,13 +158,15 @@ así que **no** se pueden instalar encima de una versión de Releases.
 Para publicar una versión ([`release.yml`](.github/workflows/release.yml)):
 
 1. Una sola vez, en *Settings → Secrets and variables → Actions*, crea dos secretos:
-   - `KEYSTORE_BASE64`: el resultado de `base64 -w0 keystore/release.p12`
+   - `KEYSTORE_BASE64`: el resultado de `base64 -w0 keystore/release.p12` (da igual si se pega con saltos de línea)
    - `KEYSTORE_PASSWORD`: la contraseña del almacén
 2. Sube `android:versionCode` y `android:versionName` en `AndroidManifest.xml`, pon la misma versión en `VERSION` y anota los cambios en `CHANGELOG.md`.
 3. Haz push a `main`. Se crea la etiqueta `vX.Y.Z` y una Release con los dos APK y `SHA256SUMS.txt`.
    También se puede lanzar a mano en *Actions → Publicar APK → Run workflow*.
 
-Si faltan los secretos, el flujo termina sin publicar y lo avisa, para no subir nunca APK firmados con otra clave.
+El flujo comprueba que la clave abre con esa contraseña y muestra la huella SHA-256 del certificado en el registro.
+Al terminar descarga los APK desde los enlaces fijos de «Descargar» y compara sus sumas: si un enlace no funciona, el flujo falla.
+Si faltan los secretos, termina sin publicar y lo avisa, para no subir nunca APK firmados con otra clave.
 La clave (`keystore/`) no se sube nunca al repositorio.
 
 ## Estructura

@@ -1,13 +1,14 @@
 name: Publicar APK
 
-# Publica una Release con los APK cuando cambia el archivo VERSION en main.
+# Publica una Release con los APK cuando cambia el archivo VERSION en main
+# (o a mano: pestaña Actions → «Publicar APK» → «Run workflow»).
 # Los APK se firman con la clave del autor, guardada en los secretos del repositorio
 # (Settings → Secrets and variables → Actions → New repository secret):
 #   KEYSTORE_BASE64    el resultado de:  base64 -w0 keystore/release.p12
 #   KEYSTORE_PASSWORD  la contraseña del almacén (la de KSPASS en build.sh)
 # Sin esos secretos el flujo no publica nada (y lo avisa), para no subir APK firmados con
 # otra clave que no se podrían instalar encima de las versiones anteriores.
-# Enlaces fijos a la última versión:
+# Enlaces fijos a la última versión (el último paso comprueba que se descargan):
 #   .../releases/latest/download/launcher-movil.apk
 #   .../releases/latest/download/launcher-movil-insignias.apk
 on:
@@ -25,7 +26,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Clave de firma
+      - name: ¿Hay clave de firma?
         id: key
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
@@ -33,11 +34,36 @@ jobs:
           if [ -z "$KEYSTORE_BASE64" ]; then
             echo "::notice::No se publica: falta el secreto KEYSTORE_BASE64 (ver README, «Publicar versiones»)."
             echo "ok=false" >> "$GITHUB_OUTPUT"
-            exit 0
+          else
+            echo "ok=true" >> "$GITHUB_OUTPUT"
           fi
+
+      - uses: actions/setup-java@v4
+        if: steps.key.outputs.ok == 'true'
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Preparar y comprobar la clave
+        if: steps.key.outputs.ok == 'true'
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KSPASS: ${{ secrets.KEYSTORE_PASSWORD }}
+        run: |
           mkdir -p keystore
-          echo "$KEYSTORE_BASE64" | base64 -d > keystore/release.p12
-          echo "ok=true" >> "$GITHUB_OUTPUT"
+          # Tolera espacios y saltos de línea al pegar el secreto desde el teléfono.
+          if ! printf '%s' "$KEYSTORE_BASE64" | tr -d ' \r\n\t' | base64 -d > keystore/release.p12 2>/dev/null; then
+            echo "::error::KEYSTORE_BASE64 no es base64 válido. Vuelve a copiarlo completo."
+            exit 1
+          fi
+          PASS="${KSPASS:-launchermovil}"
+          if ! keytool -list -storetype PKCS12 -keystore keystore/release.p12 -storepass "$PASS" -alias launcher >/dev/null 2>&1; then
+            echo "::error::No se pudo abrir la clave: revisa KEYSTORE_BASE64 y KEYSTORE_PASSWORD."
+            exit 1
+          fi
+          FP="$(keytool -list -v -storetype PKCS12 -keystore keystore/release.p12 -storepass "$PASS" -alias launcher | grep -m1 'SHA256:' | sed 's/.*SHA256: //')"
+          echo "Huella SHA-256 del certificado de firma: $FP"
+          echo "::notice::Firmando con el certificado SHA-256 $FP"
 
       - name: Versión
         id: ver
@@ -50,12 +76,6 @@ jobs:
             exit 1
           fi
           echo "v=$V" >> "$GITHUB_OUTPUT"
-
-      - uses: actions/setup-java@v4
-        if: steps.key.outputs.ok == 'true'
-        with:
-          distribution: temurin
-          java-version: '17'
 
       - name: Descargar herramientas
         if: steps.key.outputs.ok == 'true'
@@ -81,14 +101,35 @@ jobs:
           tag_name: v${{ steps.ver.outputs.v }}
           target_commitish: ${{ github.sha }}
           name: Inicio v${{ steps.ver.outputs.v }}
+          make_latest: true
           generate_release_notes: true
           body: |
             ## Qué descargar
             - **`launcher-movil.apk`** — empieza por este. Se instala desde el gestor de archivos. No tiene insignias de notificación.
             - **`launcher-movil-insignias.apk`** — con insignias. Instálalo con `adb install -r`: Google Play Protect bloquea su instalación desde el gestor de archivos porque pide acceso a notificaciones.
+            - **`SHA256SUMS.txt`** — sumas de verificación.
 
-            Cambios en [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) · Guía en el [README](https://github.com/${{ github.repository }}#readme) · Dominio público (Unlicense).
+            Después de instalarlo: *Ajustes → Apps → Apps predeterminadas → Pantalla de inicio → «Inicio»*.
+
+            Cambios en [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) · Guía en el [README](https://github.com/${{ github.repository }}#readme) · Dominio público (Unlicense): un regalo para la humanidad.
           files: |
             dist/launcher-movil.apk
             dist/launcher-movil-insignias.apk
             dist/SHA256SUMS.txt
+
+      - name: Comprobar que los enlaces de descarga funcionan
+        if: steps.key.outputs.ok == 'true'
+        run: |
+          base="https://github.com/${{ github.repository }}/releases/latest/download"
+          for f in launcher-movil.apk launcher-movil-insignias.apk; do
+            ok=""
+            for i in 1 2 3 4 5 6; do
+              if curl -fsSL -o "/tmp/$f" "$base/$f"; then ok=1; break; fi
+              sleep 10
+            done
+            [ -n "$ok" ] || { echo "::error::No se puede descargar $base/$f"; exit 1; }
+            want="$(grep " $f\$" dist/SHA256SUMS.txt | cut -d' ' -f1)"
+            got="$(sha256sum "/tmp/$f" | cut -d' ' -f1)"
+            [ "$want" = "$got" ] || { echo "::error::$f descargado no coincide con SHA256SUMS.txt"; exit 1; }
+            echo "OK $base/$f ($got)"
+          done
