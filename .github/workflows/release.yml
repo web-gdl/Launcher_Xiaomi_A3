@@ -5,8 +5,8 @@ name: Publicar APK
 # Los APK se firman con la clave del autor, guardada en los secretos del repositorio
 # (Settings → Secrets and variables → Actions → New repository secret):
 #   KEYSTORE_BASE64    el resultado de:  base64 -w0 keystore/release.p12
-#   KEYSTORE_PASSWORD  la contraseña del almacén (la de KSPASS en build.sh)
-# Sin esos secretos el flujo no publica nada (y lo avisa), para no subir APK firmados con
+#   KEYSTORE_PASSWORD  (opcional) la contraseña del almacén, si no es la predeterminada de build.sh
+# Sin KEYSTORE_BASE64 el flujo no publica nada (y lo avisa), para no subir APK firmados con
 # otra clave que no se podrían instalar encima de las versiones anteriores.
 # Enlaces fijos a la última versión (el último paso comprueba que se descargan):
 #   .../releases/latest/download/launcher-movil.apk
