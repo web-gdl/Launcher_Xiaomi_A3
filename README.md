@@ -1,19 +1,58 @@
-# Inicio: launcher ligero y privado para Android
+# Inicio — launcher ligero y privado para Android
 
 [![Compilar APK](https://github.com/web-gdl/Launcher_Xiaomi_A3/actions/workflows/main.yml/badge.svg)](https://github.com/web-gdl/Launcher_Xiaomi_A3/actions/workflows/main.yml)
 [![Licencia: dominio público](https://img.shields.io/badge/licencia-dominio%20p%C3%BAblico-brightgreen)](LICENSE)
+![Android 8.0+](https://img.shields.io/badge/Android-8.0%2B-3ddc84)
+![Sin permiso de internet](https://img.shields.io/badge/internet-no-blue)
 
-Pantalla de inicio propia para el Xiaomi 24044RN32L (Android 16 / HyperOS). Funciona en cualquier Android 8.0 o superior (API 26+).
-Sustituye al GoLauncher de fábrica sin tocarlo: se instala como una app normal y se elige como pantalla de inicio.
+<p align="center">
+  <img src="docs/screenshots/00-portada.png" width="100%" alt="Inicio: launcher ligero y privado para Android">
+</p>
 
-- **Paquete:** `com.webgdl.launcher` · **Versión:** 0.1.2
-- **Tamaño del APK:** ~130 KB (el GoLauncher de fábrica ocupa 8,5 MB).
-- **Sin permiso de internet:** no se conecta a nada. No tiene telemetría, anuncios ni SDKs de terceros.
-- **Solo APIs públicas de Android:** no necesita permisos de sistema, root ni ajustes como `hidden_api_policy`.
-- Java puro, sin Gradle, sin AndroidX y sin Kotlin. Se compila con `aapt2 → javac → D8 → apksig`.
+> **Es un regalo para la humanidad.** Dominio público: úsalo, cópialo, modifícalo, compártelo o véndelo.
+> No hace falta pedir permiso ni citar a nadie.
 
-> **Estado:** compila, se firma y pasó dos revisiones de código. Se instala en el Xiaomi 24044RN32L; **falta probar su uso en el teléfono**.
-> Si algo falla, el registro se saca con `adb logcat -d -b crash -b main > log.txt`.
+**Inicio** es una pantalla de inicio (*launcher*) hecha desde cero para un Xiaomi 24044RN32L con Android 16 (HyperOS),
+y funciona en cualquier Android 8.0 o superior. Hace lo que se espera de un launcher y nada más:
+
+- **Ligero:** el APK pesa unos **130 KB**. El de fábrica pesa 8,5 MB.
+- **Privado:** no tiene permiso de internet, así que Android le impide conectarse a nada. Sin telemetría, sin anuncios y sin SDKs de terceros.
+- **Limpio:** solo usa APIs públicas de Android. No necesita root, permisos de sistema ni ajustes ocultos.
+- **Sencillo de mantener:** Java puro, sin Gradle, sin AndroidX y sin Kotlin. Se compila con cuatro herramientas (`aapt2 → javac → D8 → apksig`).
+
+## Por qué existe
+
+El launcher que trae el teléfono (GoLauncher de Xiaomi, `com.gogo.launcher` 5.0.4) ocupa 8,5 MB. Según un análisis de su APK,
+incluye Firebase Analytics y Crashlytics y llamadas a servidores de estadísticas de Xiaomi. Parte de eso solo se activa si
+participas en el programa de experiencia de usuario de MIUI.
+
+Primero se intentó limpiarlo. No funcionó: ese launcher depende de permisos y funciones internas de Android que solo tiene la
+copia firmada por Xiaomi, así que en cuanto se modifica deja de arrancar. Por eso se escribió este, desde cero y con lo justo.
+
+## Así se ve
+
+<p align="center">
+  <img src="docs/screenshots/01-inicio.png" width="24%" alt="Escritorio con widget de reloj, apps, una carpeta y el dock">
+  <img src="docs/screenshots/02-cajon.png" width="24%" alt="Cajón con todas las apps y búsqueda">
+  <img src="docs/screenshots/03-arrastrar.png" width="24%" alt="Arrastrando un icono hacia la barra Quitar / Info / Desinstalar">
+  <img src="docs/screenshots/04-carpeta.png" width="24%" alt="Carpeta abierta">
+</p>
+
+| Escritorio | Cajón de apps | Arrastrar | Carpeta |
+|---|---|---|---|
+| Barra de búsqueda, páginas, widgets, carpetas y dock. | Todas las apps por orden alfabético, con búsqueda. Se abre deslizando hacia arriba. | La búsqueda se convierte en *Quitar / Info / Desinstalar*. | Suelta un icono sobre otro para crearla. |
+
+<sub>Imágenes generadas a partir del diseño, con las mismas medidas y colores que el código y a 720×1600 como el teléfono.
+Las apps, los iconos y el widget de reloj son de ejemplo: no son capturas del teléfono. La barra de estado y la de navegación
+son las del sistema. Se regeneran con [`docs/preview/render.py`](docs/preview/).</sub>
+
+## Estado
+
+**Versión 0.1.3** (octubre de 2026). Compila, se firma, pasó dos revisiones de código independientes y se instala en el
+Xiaomi 24044RN32L. Las pruebas de uso diario en el teléfono están en curso.
+El historial está en [`CHANGELOG.md`](CHANGELOG.md).
+
+Si algo falla, el registro se saca con `adb logcat -d -b crash -b main > log.txt`. Abre un *issue* con él.
 
 ## Funciones
 
@@ -22,7 +61,7 @@ Sustituye al GoLauncher de fábrica sin tocarlo: se instala como una app normal 
 | Escritorio con varias páginas | Desliza a izquierda y derecha. Los puntos de abajo indican la página. |
 | Búsqueda | Barra «Buscar apps» arriba del escritorio: abre el cajón con el teclado listo. El cajón tiene el mismo campo arriba. |
 | Dock (4 apps fijas) | Fila inferior. Arrastra apps dentro y fuera. |
-| Cajón de todas las apps | **Desliza hacia arriba** en cualquier parte (escritorio, dock o puntos de página). Se cierra deslizando hacia abajo con la lista arriba del todo, con Atrás o con Inicio. |
+| Cajón de todas las apps | **Desliza hacia arriba** desde cualquier parte (escritorio, dock o puntos de página). Se cierra deslizando hacia abajo con la lista arriba del todo, con Atrás o con Inicio. |
 | Mover iconos y widgets | **Mantén pulsado** y arrastra. Cerca del borde cambia de página; en la última página crea una nueva. |
 | Quitar del inicio / Info / Desinstalar | Al arrastrar, la barra de búsqueda se convierte en estas tres opciones: suelta encima de una. Quitar no desinstala: la app sigue en el cajón. |
 | Carpetas | Suelta un icono sobre otro (también en el dock). Toca la carpeta para abrirla y cambiarle el nombre. Mantén pulsada una app dentro para sacarla. |
@@ -30,27 +69,27 @@ Sustituye al GoLauncher de fábrica sin tocarlo: se instala como una app normal 
 | Atajos de las apps | En el cajón, mantén pulsada la app: aparecen sus atajos (p. ej. «Nuevo mensaje»). |
 | Widgets | Mantén pulsada una **zona vacía** del escritorio → «Widgets». |
 | Fondo de pantalla | Zona vacía → «Fondo de pantalla» (abre el selector del sistema). |
-| Insignias de notificación | Solo en la variante «insignias» (ver abajo): Ajustes del inicio → «Activar insignias» y concede el acceso a notificaciones. |
+| Insignias de notificación | Solo en la variante «insignias» (ver «Instalar»): Ajustes del inicio → «Activar insignias» y concede el acceso a notificaciones. |
 | Ajustes | Zona vacía → «Ajustes del inicio»: columnas, filas, tamaño de iconos, nombres y restablecer. |
 | Barra de notificaciones | Desliza hacia abajo en el escritorio o el dock. Usa una función no documentada de Android; si el sistema la bloquea, no hace nada. |
 
-Las apps que instales después aparecen solas al final del escritorio. Las que quites del inicio no vuelven a aparecer.
-Si reduces columnas o filas, los iconos que ya no caben se recolocan en el primer hueco libre: no se pierden.
+Las apps que instales después aparecen solas al final del escritorio, y las que quites del inicio no vuelven a aparecer.
+Si reduces columnas o filas, los iconos que ya no caben se recolocan en el primer hueco libre: no se pierde ninguno.
 
 ## Descargar
 
 | Archivo | Para qué sirve |
 |---|---|
 | **[launcher-movil.apk](https://github.com/web-gdl/Launcher_Xiaomi_A3/releases/latest/download/launcher-movil.apk)** | **Empieza por aquí.** Se instala desde el gestor de archivos. No tiene insignias de notificación. |
-| [launcher-movil-insignias.apk](https://github.com/web-gdl/Launcher_Xiaomi_A3/releases/latest/download/launcher-movil-insignias.apk) | Igual, con insignias. Se instala con `adb install -r` (ver abajo por qué). |
+| [launcher-movil-insignias.apk](https://github.com/web-gdl/Launcher_Xiaomi_A3/releases/latest/download/launcher-movil-insignias.apk) | Igual, con insignias. Se instala con `adb install -r` (ver «Instalar»). |
 | [SHA256SUMS.txt](https://github.com/web-gdl/Launcher_Xiaomi_A3/releases/latest/download/SHA256SUMS.txt) | Sumas de verificación. |
 
-Todas las versiones están en [Releases](https://github.com/web-gdl/Launcher_Xiaomi_A3/releases). Los APK de Releases van firmados con la clave del autor,
-así que cada versión se instala encima de la anterior sin perder la disposición del escritorio.
+Todas las versiones están en [Releases](https://github.com/web-gdl/Launcher_Xiaomi_A3/releases). Los APK de Releases van
+firmados con la clave del autor, así que cada versión se instala encima de la anterior sin perder la disposición del escritorio.
 
 ## Instalar
 
-Hay dos variantes con el mismo paquete y la misma firma (se puede pasar de una a otra instalando encima):
+Hay dos variantes con el mismo paquete y la misma firma, así que se puede pasar de una a otra instalando encima:
 
 | APK | Insignias | Cómo instalarla |
 |---|---|---|
@@ -82,18 +121,18 @@ Solo pide tres permisos, ninguno de red:
 | `REQUEST_DELETE_PACKAGES` | Abrir el diálogo de desinstalación del sistema. Siempre confirmas tú. |
 
 - Sin el permiso `INTERNET`, Android le impide abrir cualquier conexión.
-- La disposición del escritorio se guarda solo en el teléfono (`layout.json` en los datos privados de la app).
-- Las insignias usan el acceso a notificaciones solo para **contar** cuántas tiene cada app. No lee su contenido ni guarda nada.
-  Solo funcionan si concedes ese acceso, y puedes retirarlo cuando quieras.
+- La disposición del escritorio se guarda solo en el teléfono, en `layout.json` dentro de los datos privados de la app.
+- Las insignias usan el acceso a notificaciones solo para **contar** cuántas tiene cada app. No leen su contenido ni guardan nada,
+  y solo funcionan si concedes ese acceso, que puedes retirar cuando quieras.
 
-## Límites conocidos (v0.1.2)
+## Límites conocidos (v0.1.3)
 
 - Recientes y gestos de navegación los gestiona el sistema, no este launcher.
-- Los atajos de las apps solo aparecen cuando «Inicio» es la pantalla de inicio predeterminada; Android no deja consultarlos a otro launcher.
-- Las apps no pueden fijar accesos directos en el inicio (p. ej. «Añadir a la pantalla de inicio» desde Chrome).
+- Los atajos de las apps solo aparecen cuando «Inicio» es la pantalla de inicio predeterminada: Android no deja consultarlos a otro launcher.
+- Las apps no pueden fijar accesos directos en el inicio (p. ej. «Añadir a la pantalla de inicio» desde un navegador).
 - Las apps del cajón no se arrastran directamente al escritorio: se usa «Añadir al inicio».
-- Los widgets no se pueden redimensionar; ocupan el tamaño que pide cada widget.
-- Si un widget no se puede cargar (p. ej. tras actualizar su app), aparece un recuadro «Widget no disponible»: se vuelve a intentar al recargar y se puede quitar arrastrándolo.
+- Los widgets no se pueden redimensionar; ocupan el tamaño que pide cada uno.
+- Si un widget no se puede cargar (p. ej. tras actualizar su app), aparece un recuadro «Widget no disponible». Se vuelve a intentar al recargar y se puede quitar arrastrándolo.
 - La variante normal no tiene insignias de notificación (ver «Instalar»).
 
 ## Compilar
@@ -101,7 +140,7 @@ Solo pide tres permisos, ninguno de red:
 Requisitos: JDK 17 o superior, `curl`, `unzip` y `zip`.
 
 ```bash
-./tools/get-tools.sh     # descarga android-36.jar, aapt2 y jadx (D8 + apksig) en tools/
+./tools/get-tools.sh             # descarga android-36.jar, aapt2 y jadx (D8 + apksig) en tools/
 ./build.sh                       # -> out/launcher-movil.apk (sin insignias)
 ./build.sh --variant insignias   # -> out/launcher-movil-insignias.apk
 ./build.sh --variant ambas       # las dos
@@ -113,8 +152,8 @@ Si compilas tu propia versión, usa tu propia clave: los APK de Releases van fir
 
 ## Publicar versiones (mantenimiento)
 
-Cada push compila el proyecto en GitHub Actions ([`main.yml`](.github/workflows/main.yml)). Esos APK de prueba usan una clave temporal:
-**no** se pueden instalar encima de una versión de Releases.
+Cada push compila el proyecto en GitHub Actions ([`main.yml`](.github/workflows/main.yml)). Esos APK de prueba usan una clave temporal,
+así que **no** se pueden instalar encima de una versión de Releases.
 
 Para publicar una versión ([`release.yml`](.github/workflows/release.yml)):
 
@@ -123,8 +162,9 @@ Para publicar una versión ([`release.yml`](.github/workflows/release.yml)):
    - `KEYSTORE_PASSWORD`: la contraseña del almacén
 2. Sube `android:versionCode` y `android:versionName` en `AndroidManifest.xml`, pon la misma versión en `VERSION` y anota los cambios en `CHANGELOG.md`.
 3. Haz push a `main`. Se crea la etiqueta `vX.Y.Z` y una Release con los dos APK y `SHA256SUMS.txt`.
+   También se puede lanzar a mano en *Actions → Publicar APK → Run workflow*.
 
-Si faltan los secretos, el flujo termina sin publicar y lo avisa: así nunca sube APK firmados con otra clave.
+Si faltan los secretos, el flujo termina sin publicar y lo avisa, para no subir nunca APK firmados con otra clave.
 La clave (`keystore/`) no se sube nunca al repositorio.
 
 ## Estructura
@@ -149,8 +189,16 @@ src/com/webgdl/launcher/
   BadgeNotificationListener.java + BadgeCache.java   Insignias.
   SettingsActivity.java + Prefs.java                 Ajustes.
   Utilities.java           Medidas, iconos y márgenes de las barras del sistema.
+docs/preview/render.py     Genera las imágenes de este README.
 ```
 
 ## Licencia
 
-Dominio público ([The Unlicense](LICENSE)).
+**Es un regalo para la humanidad.** Este proyecto es de dominio público ([The Unlicense](LICENSE)).
+Cualquiera puede copiarlo, modificarlo, publicarlo, usarlo, compilarlo o venderlo, con cualquier fin y por cualquier medio,
+sin pedir permiso y sin citar a nadie. Se entrega tal cual, sin garantías.
+
+**Créditos de terceros.**
+- Algunos iconos vectoriales de la app (buscar, ajustes, información, borrar, etc.) y los glifos de las imágenes de ejemplo vienen
+  de [Material Icons](https://github.com/google/material-design-icons) (Google, Apache 2.0).
+- Las imágenes usan la letra [Roboto](https://github.com/googlefonts/roboto) (Apache 2.0).

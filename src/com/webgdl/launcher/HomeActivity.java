@@ -255,9 +255,9 @@ public class HomeActivity extends Activity implements
         dropBar.setGravity(Gravity.CENTER);
         dropBar.setBackgroundColor(0xCC000000);
         dropBar.setVisibility(View.GONE);
-        addDropZone(R.string.remove, R.drawable.ic_remove);
-        addDropZone(R.string.app_info, R.drawable.ic_app_info);
-        addDropZone(R.string.uninstall, R.drawable.ic_uninstall);
+        addDropZone(R.string.remove, R.string.remove, R.drawable.ic_remove);
+        addDropZone(R.string.app_info, R.string.drop_info, R.drawable.ic_app_info);   // «Info»: cabe en una línea
+        addDropZone(R.string.uninstall, R.string.uninstall, R.drawable.ic_uninstall);
         dragLayer.addView(dropBar, new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, dropBarBaseHeight));
 
@@ -298,14 +298,16 @@ public class HomeActivity extends Activity implements
         dragLayer.requestApplyInsets();
     }
 
-    private void addDropZone(int labelRes, int iconRes) {
+    /** @param action identifica la acción (se guarda como tag); @param labelRes texto corto de la zona. */
+    private void addDropZone(int action, int labelRes, int iconRes) {
         TextView tv = new TextView(this);
         tv.setText(labelRes);
         tv.setTextColor(0xFFFFFFFF);
+        tv.setSingleLine(true);
         tv.setGravity(Gravity.CENTER);
         tv.setCompoundDrawablePadding(Utilities.dp(this, 4));
         tv.setCompoundDrawablesWithIntrinsicBounds(0, iconRes, 0, 0);
-        tv.setTag(labelRes);
+        tv.setTag(action);
         dropBar.addView(tv, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1f));
     }
 
@@ -780,6 +782,7 @@ public class HomeActivity extends Activity implements
         if (parent != null) parent.removeView(view);   // libera el hueco
 
         dropBar.setVisibility(View.VISIBLE);
+        searchBar.setVisibility(View.INVISIBLE);   // la barra de destinos ocupa su franja; que no se transparente
         dragController.startDrag(bmp, left, top, tx, ty, it);
     }
 
@@ -1046,6 +1049,7 @@ public class HomeActivity extends Activity implements
 
     @Override public void onDragEnd(ItemInfo item, boolean dropped) {
         dropBar.setVisibility(View.GONE);
+        searchBar.setVisibility(View.VISIBLE);
         if (!dropped && item != null) {   // cancelado (p. ej. el sistema tomó el gesto)
             restoreToOrigin(item);
             saveCurrentLayout();
@@ -1156,12 +1160,19 @@ public class HomeActivity extends Activity implements
         allApps.setVisibility(View.VISIBLE);
         allApps.setTranslationY(Math.max(1, allApps.getHeight()));
         allApps.animate().translationY(0).setDuration(220)
-                .withEndAction(() -> { if (allAppsOpen && focusSearch) allApps.focusSearch(); }).start();
+                .withEndAction(() -> {
+                    if (!allAppsOpen) return;
+                    // Con el cajón abierto no se dibuja el escritorio debajo: sin iconos fantasma
+                    // a través del fondo translúcido y menos trabajo para la GPU.
+                    main.setVisibility(View.INVISIBLE);
+                    if (focusSearch) allApps.focusSearch();
+                }).start();
     }
 
     private void closeAllApps() {
         if (!allAppsOpen) return;
         allAppsOpen = false;
+        main.setVisibility(View.VISIBLE);
         allApps.hideKeyboard();
         allApps.animate().translationY(allApps.getHeight()).setDuration(200)
                 .withEndAction(() -> { if (!allAppsOpen) allApps.setVisibility(View.INVISIBLE); }).start();

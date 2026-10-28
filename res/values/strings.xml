@@ -5,6 +5,7 @@
     <string name="all_apps">Todas las apps</string>
     <string name="search_hint">Buscar apps</string>
     <string name="app_info">Información de la app</string>
+    <string name="drop_info">Info</string>
     <string name="uninstall">Desinstalar</string>
     <string name="remove">Quitar</string>
     <string name="add_to_home">Añadir al inicio</string>

@@ -1,5 +1,10 @@
 # Cambios
 
+## 0.1.3
+- Con el cajón abierto ya no se dibuja el escritorio debajo: sin iconos «fantasma» a través del fondo translúcido y menos trabajo de dibujo.
+- La barra de arrastre dice «Info» en vez de «Información de la app», que no cabía en una línea.
+- Durante el arrastre se oculta la barra de búsqueda que quedaba debajo de la barra de destinos.
+
 ## 0.1.2
 - La barra Quitar/Info/Desinstalar ocupa una franja propia (que en reposo es la barra «Buscar apps») y ya no tapa la primera fila de iconos. En 0.1.1, mantener pulsado y soltar un icono de esa fila podía quitarlo del inicio.
 - Deslizar arriba/abajo funciona también desde el dock y los puntos de página.
