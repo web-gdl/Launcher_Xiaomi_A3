@@ -80,11 +80,11 @@ Si reduces columnas o filas, los iconos que ya no caben se recolocan en el prime
 
 | Archivo | Para qué sirve |
 |---|---|
-| **[launcher-movil.apk](https://github.com/web-gdl/Launcher_Xiaomi_A3/releases/latest/download/launcher-movil.apk)** | **Empieza por aquí.** Se instala desde el gestor de archivos. No tiene insignias de notificación. |
-| [launcher-movil-insignias.apk](https://github.com/web-gdl/Launcher_Xiaomi_A3/releases/latest/download/launcher-movil-insignias.apk) | Igual, con insignias. Se instala con `adb install -r` (ver «Instalar»). |
-| [SHA256SUMS.txt](https://github.com/web-gdl/Launcher_Xiaomi_A3/releases/latest/download/SHA256SUMS.txt) | Sumas de verificación. |
+| **[launcher-movil.apk](https://github.com/web-gdl/Launcher_Xiaomi_A3/raw/main/descargas/launcher-movil.apk)** | **Empieza por aquí.** Se instala desde el gestor de archivos. No tiene insignias de notificación. |
+| [launcher-movil-insignias.apk](https://github.com/web-gdl/Launcher_Xiaomi_A3/raw/main/descargas/launcher-movil-insignias.apk) | Igual, con insignias. Se instala con `adb install -r` (ver «Instalar»). |
+| [SHA256SUMS.txt](https://github.com/web-gdl/Launcher_Xiaomi_A3/raw/main/descargas/SHA256SUMS.txt) | Sumas de verificación. |
 
-Todas las versiones están en [Releases](https://github.com/web-gdl/Launcher_Xiaomi_A3/releases). Los APK de Releases van
+Los APK están en la carpeta [`descargas/`](descargas) (también se publicarán en [Releases](https://github.com/web-gdl/Launcher_Xiaomi_A3/releases)). Van
 firmados con la clave del autor, así que cada versión se instala encima de la anterior sin perder la disposición del escritorio.
 
 ## Instalar

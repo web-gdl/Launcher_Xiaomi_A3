@@ -1,0 +1,2 @@
+2cc5e311e5e7644bd66bce6c6514a1778748a5eb76e69494a0d5bb31c29dcb1c  launcher-movil.apk
+2906d7ca7a74c7d14789fc52e56453e44f27cb608fc12cfb3c137eb60c23ee33  launcher-movil-insignias.apk
