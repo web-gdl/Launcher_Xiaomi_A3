@@ -87,6 +87,20 @@ Si reduces columnas o filas, los iconos que ya no caben se recolocan en el prime
 Los APK están en la carpeta [`descargas/`](descargas) (también se publicarán en [Releases](https://github.com/web-gdl/Launcher_Xiaomi_A3/releases)). Van
 firmados con la clave del autor, así que cada versión se instala encima de la anterior sin perder la disposición del escritorio.
 
+### Con Obtainium (actualizaciones automáticas)
+
+[Obtainium](https://github.com/ImranR98/Obtainium) instala y actualiza apps directamente desde sus versiones publicadas en GitHub,
+sin tienda de por medio.
+
+1. Instala Obtainium y, desde el teléfono, abre este enlace: [obtainium://add/https://github.com/web-gdl/Launcher_Xiaomi_A3](obtainium://add/https://github.com/web-gdl/Launcher_Xiaomi_A3)
+   (o en Obtainium pulsa «Añadir app» y pega `https://github.com/web-gdl/Launcher_Xiaomi_A3`).
+2. En «Filtrar APK por expresión regular» escribe `launcher-movil\.apk` para la variante normal,
+   o `insignias` para la de insignias. Si no, Obtainium te preguntará cuál instalar.
+3. Pulsa «Añadir». Obtainium avisará cuando salga una versión nueva.
+
+Obtainium toma los APK de [Releases](https://github.com/web-gdl/Launcher_Xiaomi_A3/releases): funciona en cuanto haya una
+versión publicada ahí.
+
 ## Instalar
 
 Hay dos variantes con el mismo paquete y la misma firma, así que se puede pasar de una a otra instalando encima:
